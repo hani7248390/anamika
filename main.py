@@ -1,14 +1,20 @@
-from fastapi import FastAPI
+from flask import Flask, request, jsonify
 
-app = FastAPI()
+app = Flask(__name__)
 
-@app.get("/")
+@app.route("/")
 def home():
-    return {"status": "Anamika chatbot is running"}
+    return "Anamika chatbot is running"
 
-@app.get("/chat")
-def chat(q: str):
-    return {
-        "question": q,
-        "answer": f"Anamika says: {q} का जवाब अभी सिखाया जा रहा है"
-    }
+@app.route("/chat", methods=["POST"])
+def chat():
+    data = request.json
+    user_message = data.get("message", "")
+
+    reply = f"Anamika: आपने कहा – {user_message}"
+
+    return jsonify({"reply": reply})
+
+
+if __name__ == "__main__":
+    app.run(host="0.0.0.0", port=10000)
